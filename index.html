@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGED - Validación de Documentos Académicos Electrónicos</title>
+    <style>
+        :root {
+            --gob-green: #0C231E; /* Verde institucional de Gob.mx */
+            --gob-gold: #9D2449; /* Guinda/Dorado de acento */
+            --bg-gray: #F4F4F4;
+            --text-dark: #333333;
+            --border-color: #DDDDDD;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Open Sans', 'Segoe UI', Roboto, sans-serif;
+            background-color: #FFFFFF;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* HEADER GOB.MX */
+        .gob-header {
+            background-color: var(--gob-green);
+            color: #FFFFFF;
+            padding: 10px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .gob-header span {
+            letter-spacing: 1px;
+        }
+
+        /* SUBHEADER SIGED */
+        .siged-banner {
+            background-color: #FFFFFF;
+            border-bottom: 4px solid var(--gob-gold);
+            padding: 20px 10%;
+        }
+
+        .siged-banner h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            color: var(--text-dark);
+            font-weight: 400;
+        }
+
+        .siged-banner p {
+            margin: 5px 0 0 0;
+            color: #666666;
+            font-size: 1.1rem;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .main-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .breadcrumb {
+            font-size: 0.85rem;
+            color: #777777;
+            margin-bottom: 20px;
+        }
+
+        /* BUSCADOR DE FOLIO */
+        .search-box {
+            background-color: var(--bg-gray);
+            padding: 20px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .search-group {
+            display: flex;
+            gap: 10px;
+            max-width: 600px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #CCCCCC;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 1rem;
+        }
+
+        .btn-search {
+            background-color: var(--gob-green);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .search-hint {
+            font-size: 0.85rem;
+            color: #666666;
+            margin: 8px 0 0 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* DETALLE DEL DOCUMENTO */
+        .results-section {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .results-title {
+            background-color: #EEEEEE;
+            margin: 0;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--gob-green);
+            font-weight: bold;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            padding: 10px 20px;
+        }
+
+        @media (min-width: 600px) {
+            .data-grid {
+                grid-template-columns: 250px 1fr;
+            }
+        }
+
+        .data-label {
+            font-weight: bold;
+            padding: 10px 0;
+            color: #555555;
+            border-bottom: 1px solid #FAFAFA;
+        }
+
+        .data-value {
+            padding: 10px 0;
+            border-bottom: 1px solid #EEEEEE;
+        }
+
+        /* TABLA DE PROMEDIO Y ESTATUS */
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .status-table th {
+            background-color: #F9F9F9;
+            text-align: left;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            color: #666666;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .status-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
+
+        .status-badge {
+            background-color: #D4EDDA;
+            color: #155724;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+
+        /* CUADRO DE ATENCIÓN */
+        .alert-box {
+            background-color: #FFF3CD;
+            border-left: 4px solid #FFC107;
+            color: #856404;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 0 4px 4px 0;
+            font-size: 0.9rem;
+        }
+
+        .alert-box strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        /* FOOTER ESTILO GOB.MX */
+        .gob-footer {
+            background-color: var(--gob-green);
+            color: #FFFFFF;
+            padding: 40px 10%;
+            margin-top: 50px;
+            font-size: 0.9rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h3 {
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 8px;
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col ul li a {
+            color: #CCCCCC;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-col ul li a:hover {
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. HEADER INSTITUCIONAL -->
+   <div class="gob-header">
+    <img src="logo_blanco.svg" alt="gob.mx" style="height: 24px; display: block;">
+    </div>
+
+    <!-- 2. BANNER DE LA DEPENDENCIA -->
+    <div class="siged-banner">
+        <h1>Sistema de Información y Gestión Educativa</h1>
+        <p>Validación de documentos académicos electrónicos</p>
+    </div>
+
+    <!-- 3. CONTENIDO CENTRAL -->
+    <div class="main-container">
+        <div class="breadcrumb">
+            Inicio / Consultas / Documentos académicos electrónicos
+        </div>
+
+        <!-- BUSCADOR DE FOLIO -->
+        <div class="search-box">
+            <div class="search-group">
+                <input type="text" class="search-input" value="694fcfeb-4592-4d1e-9435-2377e1c64821" readonly>
+                <button type="button" class="btn-search">Buscar</button>
+            </div>
+            <p class="search-hint">☑ Ubica el folio en tu certificado</p>
+        </div>
+
+        <!-- BLOQUE DE RESULTADOS -->
+        <div class="results-section">
+            <h2 class="results-title">Detalle del documento</h2>
+            
+            <div class="data-grid">
+                <div class="data-label">Nombre:</div>
+                <div class="data-value" style="font-weight: bold;">Humberto Cano Rivera</div>
+
+                <div class="data-label">Tipo de documento:</div>
+                <div class="data-value">Certificado de Terminación de Estudios</div>
+
+                <div class="data-label">Folio:</div>
+                <div class="data-value" style="font-family: monospace;">694fcfeb-4592-4d1e-9435-2377e1c64821</div>
+
+                <div class="data-label">Estudios:</div>
+                <div class="data-value">Bachillerato extendido, con formación básica para el trabajo</div>
+
+                <div class="data-label">Periodo de estudios:</div>
+                <div class="data-value">21/09/2022 al 14/05/2025</div>
+
+                <div class="data-label">Formación laboral:</div>
+                <div class="data-value">Especialidad ocupacional básica - Mecatrónica</div>
+
+                <div class="data-label">Autoridad emisora:</div>
+                <div class="data-value">Subsecretaría de Educación Obligatoria</div>
+
+                <div class="data-label">Fecha de registro en SIGED:</div>
+                <div class="data-value">07/07/2025 13:33:25</div>
+            </div>
+
+            <!-- TABLA DE CONTROL DE CALIFICACIÓN -->
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Promedio:</th>
+                        <th>Estatus del documento:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <strong style="font-size: 1.3rem; color: var(--gob-green);">9.0</strong><br>
+                            <span style="color: #666666; font-size: 0.9rem;">Nueve punto cero</span>
+                        </td>
+                        <td>
+                            <span class="status-badge">Registrado</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CUADRO DE NOTIFICACIÓN -->
+        <div class="alert-box">
+            <strong>¡Atención!</strong>
+            La información de los certificados que se muestran en este portal, es el resultado de la integración de información que envían las autoridades educativas de los estados y de la Ciudad de México. En caso de que la información presentada no coincida con tu documento o no esté disponible, por favor ponte en contacto con la autoridad de tu centro escolar. La información presentada es de carácter informativa y para verificación del documento impreso. El documento oficial es el que se entrega a los padres o tutores de los educandos en sus centros escolares.
+        </div>
+    </div>
+
+    <!-- 4. FOOTER ESTILO GOB.MX -->
+    <footer class="gob-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>Gobierno de México</h3>
+                <p style="color: #ccc; font-size: 0.85rem;">Es el portal único de trámites, información y participación ciudadana. <a href="#" style="color: white;">Leer más</a></p>
+            </div>
+            <div class="footer-col">
+                <h3>Enlaces</h3>
+                <ul>
+                    <li><a href="#">Participa</a></li>
+                    <li><a href="#">Marco Jurídico</a></li>
+                    <li><a href="#">Plataforma Nacional de Transparencia</a></li>
+                    <li><a href="#">Transparencia para el pueblo</a></li>
+                    <li><a href="#">Alerta</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contacto</h3>
+                <ul>
+                    <li><a href="#">Denuncia contra servidores públicos</a></li>
+                    <li><a href="#" style="font-weight: bold; color: white;">☎ 079 Comunícate</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
